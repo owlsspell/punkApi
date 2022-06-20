@@ -46,6 +46,7 @@ const Header = (props) => {
   const [value, setValue] = React.useState(2);
 
   const handleChange = (event, newValue) => {
+    props.setLoading(true)
     setValue(newValue);
   };
 
@@ -58,7 +59,7 @@ const Header = (props) => {
   }, [value]);
 
   return (
-    <div sx={{ bgcolor: "background.paper", width: 500 }}>
+    <div>
       <AppBar position="static">
         <Tabs
           value={value}

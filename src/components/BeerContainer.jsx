@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import Beers from "./Beers";
 import Particles from "react-tsparticles";
@@ -14,12 +14,17 @@ import { colorPalette } from "./color";
 import spinner from "../assets/Spinner-1s-200px.svg"
 
 let BeersContainer = (props) => {
+  const [loading,setLoading]=useState(true)
+
   let combined = (food) => {
     getBeersByFood(food).then((response) => {
       props.changePagesCount(response.data.length);
+      setLoading(false)
     });
-    getBeersByFoodInPage(food).then((response) =>
+    getBeersByFoodInPage(food).then((response) =>{
       props.setBeers(response.data)
+      setLoading(false)
+    }
     );
   };
   let changePage = (page, food) => {
@@ -156,6 +161,8 @@ let BeersContainer = (props) => {
         combined={combined}
         changePage={changePage}
         onSort={props.onSort}
+        setLoading={setLoading}
+        loading={loading}
       />
     :<div className="spinner_container"><img src={spinner} alt=""/></div> }
     </>

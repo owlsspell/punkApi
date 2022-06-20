@@ -8,6 +8,7 @@ import FilterTabPanel from "./FilterTabPanel";
 import Paginator from "./Paginator";
 import { colorPalette } from "./color";
 import { withStyles } from "@mui/styles";
+import spinner from "../assets/Spinner-1s-200px.svg"
 
 const styles = {
   pagesContainer: {
@@ -15,23 +16,33 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     padding: "5px 0 10px",
-    background:`linear-gradient(${colorPalette[1]},${colorPalette[2]},${colorPalette[3]})`,
-    marginBottom: 20
+    background: `linear-gradient(${colorPalette[1]},${colorPalette[2]},${colorPalette[3]})`,
+    marginBottom: 20,
   },
-  fixedTabMain:{
+  fixedTabMain: {
     maxWidth: 900,
-    width: '100%',
-    position: 'fixed',
+    width: "100%",
+    position: "fixed",
     opacity: 1,
-    zIndex:100,
-    marginTop: 10
-  }
+    zIndex: 100,
+    // marginTop: 10,
+  },
 };
 
-
 let Beers = (props) => {
-  const { classes,pagesCount,currentPage,beers,changeCurrentPage,combined,changePage,onSort } = props;
- 
+  const {
+    classes,
+    pagesCount,
+    currentPage,
+    beers,
+    changeCurrentPage,
+    combined,
+    changePage,
+    onSort,
+    setLoading,
+    loading
+  } = props;
+
   let count = 25;
 
   let pages = [];
@@ -66,7 +77,8 @@ let Beers = (props) => {
         showAllBear(currentPage);
         break;
       }
-      default: return
+      default:
+        return;
     }
   }, [currentTab]);
 
@@ -101,7 +113,6 @@ let Beers = (props) => {
 
   const handlers = useSwipeable({
     onSwiped: (eventData) => {
-
       if (eventData.deltaX < 0) {
         if (currentTab === 0) {
           changeCurrentTab(2);
@@ -129,32 +140,33 @@ let Beers = (props) => {
     <div>
       <div className="container">
         <div {...handlers}>
-          <div className={classes.fixedTabMain}>
-          <MainTabPanel
-            isActiveFilter={isActiveFilter}
-            combinedWithPizza={combinedWithPizza}
-            combinedWithSteak={combinedWithSteak}
-            showAllBear={showAllBear}
-          />
-
-          <FilterTabPanel onSort={onSortFunc} sortType={sortType} />
-
-          <div
-            className={classes.pagesContainer}
-          >
-            <Paginator
-              pages={pages}
+          <div className={classes.fixedTabMain} style={loading? {marginTop:0}:{marginTop:15}}>
+            <MainTabPanel
               isActiveFilter={isActiveFilter}
-              onPageChanged={onPageChanged}
-              currentPage={currentPage}
+              combinedWithPizza={combinedWithPizza}
+              combinedWithSteak={combinedWithSteak}
+              showAllBear={showAllBear}
+              setLoading={setLoading}
             />
+
+            <FilterTabPanel onSort={onSortFunc} sortType={sortType} />
+            
+            <div className={classes.pagesContainer}>
+              <Paginator
+                pages={pages}
+                isActiveFilter={isActiveFilter}
+                onPageChanged={onPageChanged}
+                currentPage={currentPage}
+              />
+            </div>
           </div>
-          </div>
+          {loading ? <div className="spinner_container"><img src={spinner} alt=""/></div>  :<>
           <BeersBlock
             beers={beers}
             showBeerInfo={showBeerInfo}
             beerNum={beerNum}
           />
+          </>}
         </div>
       </div>
     </div>
